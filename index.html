@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BAKUFRAMED — Ehtirasınız çərçivədə</title>
+<meta name="description" content="BAKUFRAMED — raketka, forma və idman xatirələriniz üçün əl işi, muzey səviyyəli çərçivələr. Bakıda hazırlanır." />
+<link rel="icon" href="assets/brand/logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<!-- ============ PRELOADER ============ -->
+<div class="preloader" id="preloader">
+  <div class="preloader__logo">
+    <span class="logo-shape preloader__base" aria-hidden="true"></span>
+    <span class="logo-shape preloader__fill" id="preloaderMask" aria-hidden="true"></span>
+    <span class="sr-only">BAKUFRAMED yüklənir</span>
+  </div>
+  <div class="preloader__counter">
+    <span id="preloaderNum">0</span><span class="preloader__pct">%</span>
+  </div>
+</div>
+
+<!-- ============ HEADER ============ -->
+<div class="scrollbar" aria-hidden="true"><span id="scrollbarFill"></span></div>
+
+<header class="hdr" id="hdr">
+  <button class="hdr__sound" id="soundToggle" aria-pressed="false">
+    <span class="hdr__sound-label" id="soundLabel">OFF</span>
+    <span class="eq" id="eq"><i></i><i></i><i></i><i></i></span>
+  </button>
+
+  <a class="hdr__logo" href="#top" aria-label="BAKUFRAMED">
+    <span class="logo-shape"></span>
+  </a>
+
+  <button class="hdr__menu" id="menuToggle" aria-expanded="false">
+    <span class="dots"><i></i><i></i><i></i><i></i></span>
+    <span class="hdr__menu-label">MENYU</span>
+  </button>
+</header>
+
+<!-- ============ MENU OVERLAY ============ -->
+<div class="menu" id="menu">
+  <nav class="menu__nav">
+    <a href="#collection" data-menu-link><span>01</span>Kolleksiya</a>
+    <a href="#benefits" data-menu-link><span>02</span>Üstünlüklər</a>
+    <a href="#faq" data-menu-link><span>03</span>FAQ</a>
+    <a href="#newsletter" data-menu-link><span>04</span>Newsletter</a>
+  </nav>
+  <div class="menu__side">
+    <a href="mailto:salam@bakuframed.az">Əlaqə</a>
+    <a href="https://instagram.com/bakuframed" target="_blank" rel="noopener">Instagram</a>
+    <a href="https://tiktok.com/@bakuframed" target="_blank" rel="noopener">TikTok</a>
+  </div>
+  <p class="menu__meta">BAKI · AZƏRBAYCAN</p>
+</div>
+
+<main id="top">
+
+<!-- ============ HERO / CAROUSEL ============ -->
+<section class="hero" id="hero">
+  <div class="hero__sticky">
+    <div class="frame-marks" aria-hidden="true">
+      <i class="fm fm--tl"></i><i class="fm fm--tr"></i><i class="fm fm--bl"></i><i class="fm fm--br"></i>
+    </div>
+
+    <p class="hero__vertical" aria-hidden="true">B&nbsp;A&nbsp;K&nbsp;U&nbsp;F&nbsp;R&nbsp;A&nbsp;M&nbsp;E&nbsp;D</p>
+
+    <h1 class="hero__h1">BAKUFRAMED — Ehtirasınız çərçivədə</h1>
+
+    <div class="stage" id="stage">
+      <div class="stage__glow" id="stageGlow"></div>
+      <div class="stage__track" id="stageTrack"></div>
+      <div class="stage__floor"></div>
+    </div>
+
+    <div class="hero__caption">
+      <div class="hero__names" id="heroNames"></div>
+      <div class="slider">
+        <span class="slider__line"></span>
+        <span class="slider__thumb" id="sliderThumb"></span>
+      </div>
+      <p class="hero__hint">KƏŞF ETMƏK ÜÇÜN SCROLL EDİN</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRODUCT SCENES (injected by JS) ============ -->
+<div id="scenes"></div>
+
+<!-- ============ COLLECTION ============ -->
+<section class="collection" id="collection">
+  <div class="collection__head">
+    <p class="eyebrow">01 — Kolleksiya</p>
+    <h2 class="collection__title">BÜTÜN<br />ÇƏRÇİVƏLƏR</h2>
+    <p class="collection__lead">Hər çərçivə Bakıda, əldən keçirilərək hazırlanır. Kort fonu, oyunçu adı və tarix qravürası sizin seçiminizlə.</p>
+  </div>
+  <div class="collection__row" id="collectionRow"></div>
+</section>
+
+<!-- ============ BENEFITS ============ -->
+<section class="benefits" id="benefits">
+  <p class="eyebrow eyebrow--center">02 — Nəyə görə BAKUFRAMED</p>
+  <div class="benefits__list" id="benefitsList"></div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section class="faq" id="faq">
+  <h2 class="faq__title">TEZ-TEZ<br />VERİLƏN SUALLAR</h2>
+  <div class="faq__list" id="faqList"></div>
+</section>
+
+<!-- ============ NEWSLETTER ============ -->
+<section class="news" id="newsletter">
+  <div class="news__inner">
+    <p class="eyebrow">04 — Newsletter</p>
+    <h2 class="news__title">BİZƏ<br />QOŞULUN</h2>
+    <p class="news__lead">Yeni kolleksiyalar, limitli buraxılışlar və atelye arxasından kadrlar — birinci siz bilin.</p>
+    <form class="news__form" id="newsForm" novalidate>
+      <label class="news__field">
+        <span>E-POÇT ÜNVANINIZ</span>
+        <input type="email" id="newsEmail" required placeholder="ad@numune.az" autocomplete="email" />
+      </label>
+      <button type="submit" class="btn">ABUNƏ OL</button>
+    </form>
+    <p class="news__note">Abunə olmaqla <a href="#">məxfilik siyasətimizi</a> qəbul edirsiniz.</p>
+    <p class="news__status" id="newsStatus" role="status"></p>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="ftr">
+  <div class="ftr__top">
+    <span class="logo-shape ftr__logo" role="img" aria-label="BAKUFRAMED"></span>
+    <div class="ftr__links">
+      <a href="https://instagram.com/bakuframed" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://tiktok.com/@bakuframed" target="_blank" rel="noopener">TikTok</a>
+      <a href="mailto:salam@bakuframed.az">salam@bakuframed.az</a>
+    </div>
+  </div>
+  <div class="ftr__marquee" aria-hidden="true">
+    <div class="ftr__marquee-track"><span>BAKUFRAMED · ÇƏRÇİVƏYƏ ALINMIŞ XATİRƏLƏR · </span><span>BAKUFRAMED · ÇƏRÇİVƏYƏ ALINMIŞ XATİRƏLƏR · </span></div>
+  </div>
+  <div class="ftr__bottom">
+    <p>© 2026 BAKUFRAMED — BAKI, AZƏRBAYCAN</p>
+    <nav>
+      <a href="#">Hüquqi məlumat</a>
+      <a href="#">İstifadə şərtləri</a>
+      <a href="#">Məxfilik siyasəti</a>
+    </nav>
+  </div>
+</footer>
+
+</main>
+
+<script src="js/data.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
