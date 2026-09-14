@@ -29,16 +29,28 @@ body {
   color: var(--fg);
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   font-weight: 400;
+  /* clip — hidden-dən fərqli olaraq scroll konteyneri yaratmır,
+     beləcə position: sticky bölmələr işləməyə davam edir */
   overflow-x: hidden;
+  overflow-x: clip;
+  overscroll-behavior-y: contain;
   -webkit-font-smoothing: antialiased;
 }
 
-body.is-locked { overflow: hidden; height: 100vh; }
+body.is-locked { overflow: hidden; height: 100vh; height: 100dvh; }
 body.is-menu-open { overflow: hidden; }
 
 img { display: block; max-width: 100%; }
 a { color: inherit; text-decoration: none; }
-button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
 
 ::selection { background: var(--fg); color: #000; }
 
@@ -302,7 +314,9 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .hero__sticky {
   position: sticky;
   top: 0;
+  /* dvh: mobil brauzer paneli gizlənəndə yüksəklik sıçramır */
   height: 100vh;
+  height: 100dvh;
   overflow: hidden;
   background:
     radial-gradient(120% 80% at 50% 118%, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0.03) 42%, transparent 70%),
@@ -480,6 +494,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   position: sticky;
   top: 0;
   height: 100vh;
+  height: 100dvh;
   overflow: hidden;
   display: grid;
   place-items: center;
@@ -637,7 +652,13 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   border-bottom: 1px solid var(--hair);
   transition: transform 0.7s var(--ease);
 }
-.tile:hover { transform: translateY(-12px); }
+@media (hover: hover) {
+  .tile:hover { transform: translateY(-12px); }
+  .tile:hover .tile__media::after { opacity: 0.75; }
+  .tile:hover .tile__media img { transform: scale(1.06); }
+}
+/* toxunma cihazlarında vurğu görünüşdə olduqda işıqlanır */
+.tile.is-in .tile__media::after { opacity: 0.4; }
 
 .tile__media {
   position: relative;
@@ -655,7 +676,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   opacity: 0;
   transition: opacity 0.7s var(--ease);
 }
-.tile:hover .tile__media::after { opacity: 0.75; }
 .tile__media img {
   position: relative;
   z-index: 1;
@@ -666,8 +686,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   -webkit-mask-composite: source-in;
   mask-composite: intersect;
 }
-.tile:hover .tile__media img { transform: scale(1.06); }
-
 .tile__foot { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; }
 .tile__name {
   font-family: 'Anton', sans-serif;
@@ -932,6 +950,31 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   .collection__lead { justify-self: start; }
   .scene__index { display: none; }
   .bnf { grid-template-columns: 1fr; gap: 22px; }
+
+  /* toxunma sahələri minimum 44px */
+  .hdr__sound, .hdr__menu { min-height: 44px; }
+  .menu__side a,
+  .ftr__links a,
+  .ftr__bottom nav a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+  /* sətir daxilindəki xırda link: düzümü dəyişmədən toxunma sahəsi genişlənir */
+  .news__note a { padding: 13px 0; }
+
+  /* 9px etiketlər toxunma ekranlarında oxunmur */
+  .hero__vertical,
+  .hero__hint,
+  .hero__name em,
+  .scene__kicker,
+  .scene__specs div,
+  .tile__kicker,
+  .news__field span,
+  .ftr__bottom,
+  .ftr__bottom a { font-size: 10px; }
+
+  .news__field input { font-size: 16px; } /* iOS-da fokusda zoom etməsin */
 }
 
 /* Planşet: şəkil solda, mətn sağda — üst-üstə düşmür */
@@ -942,7 +985,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     column-gap: 4vw;
     padding: 8vh var(--pad) 6vh;
   }
-  .scene__product { grid-column: 1; width: min(34vw, 300px); }
+  .scene__product { grid-column: 1; width: min(42vw, 360px); }
   .scene__panel {
     position: static;
     grid-column: 2;
@@ -950,49 +993,155 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     transform: none;
   }
   .scene__statement { font-size: 13vw; opacity: 0.16; }
+  /* planşetdə hero kartına daha çox yer */
+  .card__img { height: clamp(280px, 52vh, 620px); }
 }
 
 @media (max-width: 720px) {
-  .hero { height: 460vh; }
-  /* mobildə çərçivə mümkün qədər böyük görünsün: en və hündürlük üzrə
-     eyni vaxtda məhdudlaşdırılır, nisbət qorunur */
+  :root { --pad: 20px; }
+
+  /* çərtikli telefonlarda təhlükəsiz sahə */
+  .hdr { padding-top: max(20px, env(safe-area-inset-top)); }
+  .scrollbar { left: max(20px, env(safe-area-inset-left)); right: max(20px, env(safe-area-inset-right)); }
+  .ftr { padding-bottom: max(30px, env(safe-area-inset-bottom)); }
+
+  .menu__meta { font-size: 10px; }
+
+  /* ---------- HERO ---------- */
+  .hero { height: 420vh; }
+  /* çərçivə mümkün qədər böyük görünsün: en və hündürlük üzrə eyni vaxtda
+     məhdudlaşdırılır, şəklin nisbəti qorunur */
   .card { top: 44%; }
-  .card__img { height: auto; width: auto; max-height: 58vh; max-width: 94vw; }
-  .stage__glow { width: 118vmin; height: 118vmin; opacity: 0.42; }
+  .card__img {
+    height: auto;
+    width: auto;
+    max-height: 58vh;
+    max-height: 58dvh;
+    max-width: 94vw;
+  }
+  .stage__glow { width: 118vmin; height: 118vmin; opacity: 0.42; filter: none; }
   .hero__vertical { display: none; }
-  .hero__caption { bottom: 26px; gap: 14px; }
-  .hero__names { font-size: 25px; height: 2.9em; }
-  .slider { width: 74vw; }
-  .menu { grid-template-columns: 1fr; align-content: start; padding-top: 22vh; }
-  .menu__side { text-align: left; margin-top: 8vh; }
-  /* Mobil səhnə: şəkil yuxarıda, mətn altda — heç bir örtüşmə yoxdur */
-  .scene { height: 220vh; }
+  .frame-marks { inset: 11dvh var(--pad); }
+  .hero__caption { bottom: max(22px, env(safe-area-inset-bottom)); gap: 13px; }
+  .hero__names { font-size: clamp(24px, 7.4vw, 34px); height: 2.9em; }
+  .hero__name em { font-size: 10px; letter-spacing: 0.24em; margin-bottom: 10px; }
+  .slider { width: 76vw; }
+  .hero__hint { font-size: 10px; letter-spacing: 0.24em; }
+
+  /* ---------- MENYU ---------- */
+  .menu { grid-template-columns: 1fr; align-content: start; padding-top: 20dvh; }
+  .menu__nav { gap: 10px; }
+  .menu__nav a { font-size: clamp(34px, 11.5vw, 58px); gap: 14px; }
+  .menu__side { text-align: left; margin-top: 7dvh; font-size: 12px; }
+
+  /* ---------- MƏHSUL SƏHNƏLƏRİ ----------
+     şəkil yuxarıda, mətn altda — heç bir örtüşmə yoxdur */
+  .scene { height: 200vh; }
   .scene__sticky {
     grid-template-rows: 1fr auto;
     align-items: center;
     justify-items: center;
-    padding: 11vh var(--pad) 5vh;
-    row-gap: 3vh;
+    padding: 11dvh var(--pad) max(22px, env(safe-area-inset-bottom));
+    row-gap: 3dvh;
   }
+  .scene__rays { display: none; } /* mobildə performans üçün */
   .scene__product { grid-row: 1; width: auto; }
-  .scene__product img { width: auto; height: auto; max-height: 39vh; max-width: 80vw; }
+  .scene__product img {
+    width: auto;
+    height: auto;
+    max-height: 39vh;
+    max-height: 39dvh;
+    max-width: 80vw;
+  }
   .scene__panel {
     position: static;
     grid-row: 2;
     width: 100%;
     transform: none;
-    gap: 12px;
+    gap: 11px;
   }
-  .scene__name { font-size: 26px; }
-  .scene__text { font-size: 12.5px; line-height: 1.65; }
-  .scene__specs div { padding: 8px 0; font-size: 9px; }
+  .scene__kicker { font-size: 10px; letter-spacing: 0.24em; }
+  .scene__name { font-size: clamp(22px, 7vw, 30px); }
+  .scene__text { font-size: 13px; line-height: 1.65; }
+  .scene__specs div { padding: 9px 0; font-size: 10px; letter-spacing: 0.1em; }
   /* nəhəng yazı şəklin arxasında yalnız tekstura kimi qalır */
-  .scene__statement { top: 23vh; bottom: auto; font-size: 18vw; opacity: 0.1; }
-  .news__form { grid-template-columns: 1fr; }
-  .btn { justify-self: start; }
-  .ftr__bottom { flex-direction: column; }
+  .scene__statement { top: 22dvh; bottom: auto; font-size: 18vw; opacity: 0.1; }
+
+  /* ---------- KOLLEKSİYA ---------- */
+  .collection { padding: 12dvh var(--pad) 10dvh; }
+  .collection__head { margin-bottom: 7dvh; gap: 16px; }
+  .collection__title { font-size: clamp(40px, 13vw, 84px); }
+  .collection__lead { font-size: 13.5px; max-width: none; }
+  .collection__row { row-gap: 40px; }
+
+  /* ---------- ÜSTÜNLÜKLƏR ---------- */
+  .benefits { padding: 10dvh var(--pad) 12dvh; }
+  .benefits__list { margin-top: 6dvh; }
+  .bnf { padding: 30px 0; gap: 18px; }
+  .bnf__left { gap: 14px; }
+  .bnf__old { font-size: 12.5px; }
+  .bnf__title { font-size: clamp(31px, 10.5vw, 58px); }
+  .bnf__text { font-size: 13.5px; line-height: 1.72; }
+
+  /* ---------- FAQ ---------- */
+  .faq { padding: 10dvh var(--pad) 12dvh; }
+  .faq__title { font-size: clamp(34px, 11vw, 68px); margin-bottom: 6dvh; }
+  .qa__btn { font-size: 15px; padding: 22px 0; gap: 16px; }
+  .qa__inner p { padding: 0 0 26px; font-size: 13.5px; }
+
+  /* ---------- NEWSLETTER ---------- */
+  .news { padding: 12dvh var(--pad); }
+  .news__title { font-size: clamp(40px, 13vw, 84px); }
+  .news__lead { font-size: 13.5px; }
+  .news__form { grid-template-columns: 1fr; gap: 22px; }
+  .btn { justify-self: start; padding: 15px 28px; }
+
+  /* ---------- FOOTER ---------- */
+  .ftr__top { padding: 5dvh 0; gap: 22px; }
+  .ftr__links { gap: 18px; }
+  .ftr__marquee-track span { font-size: 22px; }
+  .ftr__bottom { flex-direction: column; gap: 14px; }
+}
+
+/* Uzun telefonlarda boş qalan yeri şəklə veririk */
+@media (max-width: 720px) and (min-height: 780px) {
+  .scene__product img { max-height: 45dvh; max-width: 88vw; }
+  .card__img { max-width: 96vw; }
+}
+
+/* Kiçik telefonlar: kolleksiya tək sütun — portret fotolar üçün daha uyğun */
+@media (max-width: 560px) {
+  .collection__row { grid-template-columns: 1fr; }
+  .tile__media { aspect-ratio: 1 / 1; }
+  .tile__media img { width: 78%; }
+  .tile__name { font-size: 20px; }
+}
+
+/* Telefon yan vəziyyətdə: hündürlük azdır, ölçüləri sıxırıq */
+@media (max-height: 560px) and (orientation: landscape) {
+  .card { top: 46%; }
+  .card__img { max-height: 52dvh; max-width: 44vw; height: auto; width: auto; }
+  .hero__names { font-size: 18px; height: 2.5em; }
+  .hero__name em { margin-bottom: 6px; }
+  .hero__caption { bottom: 12px; gap: 8px; }
+  .frame-marks { inset: 8dvh var(--pad); }
+  .scene__sticky {
+    grid-template-rows: 1fr;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 12dvh var(--pad) 6dvh;
+    column-gap: 4vw;
+  }
+  .scene__product { grid-row: 1; grid-column: 1; }
+  .scene__product img { max-height: 62dvh; max-width: 42vw; }
+  .scene__panel { grid-row: 1; grid-column: 2; }
+  .scene__statement { top: auto; bottom: 4dvh; font-size: 11vw; }
+  .menu { padding-top: 14dvh; }
+  .menu__nav a { font-size: clamp(26px, 7vw, 40px); }
+  .menu__side { margin-top: 4dvh; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   * { animation-duration: 0.001s !important; transition-duration: 0.001s !important; }
+  .ftr__marquee-track, .scene__rays { animation: none !important; }
 }
